@@ -36,7 +36,7 @@ DOCKER_EXAMPLES_DIR = SOURCE_ROOT / "docs" / "docker-stack" / "docker-examples"
 
 @lru_cache(maxsize=None)
 def get_latest_airflow_version_released():
-    response = requests.get("https://pypi.org/pypi/apache-airflow/json")
+    response = requests.get("https://pypi.org/pypi/apache-airflow/json", timeout=60)
     response.raise_for_status()
     return response.json()["info"]["version"]
 

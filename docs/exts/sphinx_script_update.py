@@ -76,12 +76,12 @@ def fetch_and_cache(script_url: str, output_filename: str):
 
     # If we have a file and etag, check the fast path
     if os.path.exists(cache_filepath) and etag:
-        res = requests.get(script_url, headers={"If-None-Match": etag})
+        res = requests.get(script_url, headers={"If-None-Match": etag}, timeout=60)
         if res.status_code == 304:
             return cache_filepath
 
     # Slow patch
-    res = requests.get(script_url)
+    res = requests.get(script_url, timeout=60)
     res.raise_for_status()
 
     with open(cache_filepath, "wb") as output_file:
