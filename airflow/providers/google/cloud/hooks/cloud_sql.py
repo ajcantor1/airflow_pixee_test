@@ -22,7 +22,6 @@ import errno
 import json
 import os
 import platform
-import random
 import re
 import shutil
 import socket
@@ -52,6 +51,7 @@ from airflow.providers.google.common.hooks.base_google import GoogleBaseAsyncHoo
 from airflow.providers.mysql.hooks.mysql import MySqlHook
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 from airflow.utils.log.logging_mixin import LoggingMixin
+import secrets
 
 if TYPE_CHECKING:
     from requests import Session
@@ -879,10 +879,10 @@ class CloudSQLDatabaseHook(BaseHook):
         100 character length limitation of a socket path. This generates a
         shorter path ``${tempdir()}[8 random characters]``.
         """
-        random.seed()
+        secrets.SystemRandom().seed()
         while True:
             candidate = os.path.join(
-                gettempdir(), "".join(random.choices(string.ascii_lowercase + string.digits, k=8))
+                gettempdir(), "".join(secrets.SystemRandom().choices(string.ascii_lowercase + string.digits, k=8))
             )
             if not os.path.exists(candidate):
                 return candidate

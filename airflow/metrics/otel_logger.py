@@ -18,7 +18,6 @@ from __future__ import annotations
 
 import datetime
 import logging
-import random
 import warnings
 from functools import partial
 from typing import TYPE_CHECKING, Callable, Iterable, Union
@@ -37,6 +36,7 @@ from airflow.metrics.validators import (
     AllowListValidator,
     stat_name_otel_handler,
 )
+import secrets
 
 if TYPE_CHECKING:
     from opentelemetry.metrics import Instrument
@@ -132,7 +132,7 @@ def _get_otel_safe_name(name: str) -> str:
 def _skip_due_to_rate(rate: float) -> bool:
     if rate < 0:
         raise ValueError("rate must be a positive value.")
-    return rate < 1 and random.random() > rate
+    return rate < 1 and secrets.SystemRandom().random() > rate
 
 
 class _OtelTimer(Timer):

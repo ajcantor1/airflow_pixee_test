@@ -27,7 +27,6 @@ A client for AWS Batch services.
 from __future__ import annotations
 
 import itertools
-import random
 import time
 from typing import TYPE_CHECKING, Callable
 
@@ -38,6 +37,7 @@ import botocore.waiter
 from airflow.exceptions import AirflowException
 from airflow.providers.amazon.aws.hooks.base_aws import AwsBaseHook
 from airflow.typing_compat import Protocol, runtime_checkable
+import secrets
 
 if TYPE_CHECKING:
     from airflow.providers.amazon.aws.utils.task_log_fetcher import AwsTaskLogFetcher
@@ -529,7 +529,7 @@ class BatchClientHook(AwsBaseHook):
         minima = abs(minima)
         lower = max(minima, delay - width)
         upper = delay + width
-        return random.uniform(lower, upper)
+        return secrets.SystemRandom().uniform(lower, upper)
 
     @staticmethod
     def delay(delay: int | float | None = None) -> None:
@@ -546,7 +546,7 @@ class BatchClientHook(AwsBaseHook):
             when many concurrent tasks request job-descriptions.
         """
         if delay is None:
-            delay = random.uniform(BatchClientHook.DEFAULT_DELAY_MIN, BatchClientHook.DEFAULT_DELAY_MAX)
+            delay = secrets.SystemRandom().uniform(BatchClientHook.DEFAULT_DELAY_MIN, BatchClientHook.DEFAULT_DELAY_MAX)
         else:
             delay = BatchClientHook.add_jitter(delay)
         time.sleep(delay)
@@ -594,4 +594,4 @@ class BatchClientHook(AwsBaseHook):
         max_interval = 600.0  # results in 3 to 10 minute delay
         delay = 1 + pow(tries * 0.6, 2)
         delay = min(max_interval, delay)
-        return random.uniform(delay / 3, delay)
+        return secrets.SystemRandom().uniform(delay / 3, delay)

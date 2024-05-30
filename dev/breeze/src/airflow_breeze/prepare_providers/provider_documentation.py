@@ -19,7 +19,6 @@ from __future__ import annotations
 
 import difflib
 import os
-import random
 import re
 import subprocess
 import sys
@@ -51,6 +50,7 @@ from airflow_breeze.utils.packages import (
 from airflow_breeze.utils.run_utils import run_command
 from airflow_breeze.utils.shared_options import get_verbose
 from airflow_breeze.utils.versions import get_version_tag
+import secrets
 
 PR_PATTERN = re.compile(r".*\(#(\d+)\)")
 
@@ -395,7 +395,7 @@ def _ask_the_user_for_the_type_of_changes(non_interactive: bool) -> TypeOfChange
     if non_interactive:
         # Simulate all possible non-terminal answers - this is useful for running on CI where we want to
         # Test all possibilities.
-        return TypeOfChange(random.choice(type_of_changes_array))
+        return TypeOfChange(secrets.choice(type_of_changes_array))
     display_answers = "/".join(type_of_changes_array) + "/q"
     while True:
         get_console().print(

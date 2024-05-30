@@ -22,8 +22,6 @@ version ``@task.branch_external_python`` which calls an external Python interpre
 the ``@task.branch_virtualenv`` which builds a temporary Python virtual environment.
 """
 from __future__ import annotations
-
-import random
 import sys
 import tempfile
 
@@ -34,6 +32,7 @@ from airflow.models.dag import DAG
 from airflow.operators.empty import EmptyOperator
 from airflow.utils.edgemodifier import Label
 from airflow.utils.trigger_rule import TriggerRule
+import secrets
 
 PATH_TO_PYTHON_BINARY = sys.executable
 
@@ -54,7 +53,7 @@ with DAG(
     # [START howto_operator_branch_python]
     @task.branch()
     def branching(choices: list[str]) -> str:
-        return f"branch_{random.choice(choices)}"
+        return f"branch_{secrets.choice(choices)}"
 
     # [END howto_operator_branch_python]
 
@@ -81,9 +80,8 @@ with DAG(
     # [START howto_operator_branch_ext_py]
     @task.branch_external_python(python=PATH_TO_PYTHON_BINARY)
     def branching_ext_python(choices) -> str:
-        import random
 
-        return f"ext_py_{random.choice(choices)}"
+        return f"ext_py_{secrets.choice(choices)}"
 
     # [END howto_operator_branch_ext_py]
 
@@ -113,12 +111,11 @@ with DAG(
 
     @task.branch_virtualenv(requirements=["numpy~=1.24.4"], venv_cache_path=VENV_CACHE_PATH)
     def branching_virtualenv(choices) -> str:
-        import random
 
         import numpy as np
 
         print(f"Some numpy stuff: {np.arange(6)}")
-        return f"venv_{random.choice(choices)}"
+        return f"venv_{secrets.choice(choices)}"
 
     # [END howto_operator_branch_virtualenv]
 

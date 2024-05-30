@@ -21,7 +21,6 @@ import datetime
 import itertools
 import logging
 import os
-import random
 import uuid
 import warnings
 from typing import TYPE_CHECKING, Any, Callable, Collection, Container, Iterable, Sequence
@@ -107,6 +106,7 @@ from airflow.utils.session import NEW_SESSION, provide_session
 from airflow.www.extensions.init_auth_manager import get_auth_manager
 from airflow.www.security_manager import AirflowSecurityManagerV2
 from airflow.www.session import AirflowDatabaseSessionInterface
+import secrets
 
 if TYPE_CHECKING:
     from airflow.auth.managers.base_auth_manager import ResourceMethod
@@ -728,7 +728,7 @@ class FabAirflowSecurityManagerOverride(AirflowSecurityManagerV2):
             role = self.find_role("Admin")
             assert role is not None
             # password does not contain visually similar characters: ijlIJL1oO0
-            password = "".join(random.choices("abcdefghkmnpqrstuvwxyzABCDEFGHKMNPQRSTUVWXYZ23456789", k=16))
+            password = "".join(secrets.SystemRandom().choices("abcdefghkmnpqrstuvwxyzABCDEFGHKMNPQRSTUVWXYZ23456789", k=16))
             with open(password_path, "w") as file:
                 file.write(password)
             make_group_other_inaccessible(password_path)

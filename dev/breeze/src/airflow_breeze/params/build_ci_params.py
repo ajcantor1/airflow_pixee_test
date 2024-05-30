@@ -15,8 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 from __future__ import annotations
-
-import random
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -24,6 +22,7 @@ from airflow_breeze.branch_defaults import DEFAULT_AIRFLOW_CONSTRAINTS_BRANCH
 from airflow_breeze.global_constants import get_airflow_version
 from airflow_breeze.params.common_build_params import CommonBuildParams
 from airflow_breeze.utils.path_utils import BUILD_CACHE_DIR
+import secrets
 
 
 @dataclass
@@ -69,7 +68,7 @@ class BuildCiParams(CommonBuildParams):
         self._req_arg("CONSTRAINTS_GITHUB_REPOSITORY", self.constraints_github_repository)
         self._req_arg("PYTHON_BASE_IMAGE", self.python_base_image)
         if self.upgrade_to_newer_dependencies:
-            self._opt_arg("UPGRADE_TO_NEWER_DEPENDENCIES", f"{random.randrange(2**32):x}")
+            self._opt_arg("UPGRADE_TO_NEWER_DEPENDENCIES", f"{secrets.SystemRandom().randrange(2**32):x}")
             if self.eager_upgrade_additional_requirements:
                 # in case eager upgrade additional requirements have EOL, connect them together
                 self._opt_arg(
