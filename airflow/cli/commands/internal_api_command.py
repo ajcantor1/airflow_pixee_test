@@ -52,6 +52,7 @@ from airflow.www.extensions.init_jinja_globals import init_jinja_globals
 from airflow.www.extensions.init_manifest_files import configure_manifest_files
 from airflow.www.extensions.init_security import init_xframe_protection
 from airflow.www.extensions.init_views import init_api_internal, init_error_handlers
+from security import safe_command
 
 log = logging.getLogger(__name__)
 app: Flask | None = None
@@ -160,7 +161,7 @@ def internal_api(args):
 
         def start_and_monitor_gunicorn(args):
             if args.daemon:
-                subprocess.Popen(run_args, close_fds=True)
+                safe_command.run(subprocess.Popen, run_args, close_fds=True)
 
                 # Reading pid of gunicorn master as it will be different that
                 # the one of process spawned above.
@@ -173,7 +174,7 @@ def internal_api(args):
                 gunicorn_master_proc = psutil.Process(gunicorn_master_proc_pid)
                 monitor_gunicorn(gunicorn_master_proc)
             else:
-                with subprocess.Popen(run_args, close_fds=True) as gunicorn_master_proc:
+                with safe_command.run(subprocess.Popen, run_args, close_fds=True) as gunicorn_master_proc:
                     monitor_gunicorn(gunicorn_master_proc)
 
         if args.daemon:

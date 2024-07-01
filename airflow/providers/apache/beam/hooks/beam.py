@@ -38,6 +38,7 @@ from airflow.exceptions import AirflowConfigException, AirflowException
 from airflow.hooks.base import BaseHook
 from airflow.providers.google.go_module_utils import init_module, install_dependencies
 from airflow.utils.python_virtualenv import prepare_virtualenv
+from security import safe_command
 
 if TYPE_CHECKING:
     import logging
@@ -130,8 +131,7 @@ def run_beam_command(
     """
     log.info("Running command: %s", " ".join(shlex.quote(c) for c in cmd))
 
-    proc = subprocess.Popen(
-        cmd,
+    proc = safe_command.run(subprocess.Popen, cmd,
         cwd=working_directory,
         shell=False,
         stdout=subprocess.PIPE,

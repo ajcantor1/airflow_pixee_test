@@ -31,6 +31,7 @@ from airflow_breeze.utils.helm_chart_utils import chart_version
 from airflow_breeze.utils.packages import get_provider_packages_metadata, get_short_package_name
 from airflow_breeze.utils.publish_docs_helpers import pretty_format_path
 from airflow_breeze.utils.spelling_checks import SpellingError, parse_spelling_warnings
+from security import safe_command
 
 PROCESS_TIMEOUT = 15 * 60
 
@@ -160,8 +161,7 @@ class PublishDocsBuilder:
                 f"[info]{self.package_name:60}:[/] The output is hidden until an error occurs."
             )
         with open(self.log_spelling_filename, "w") as output:
-            completed_proc = run(
-                build_cmd,
+            completed_proc = safe_command.run(run, build_cmd,
                 cwd=self._src_dir,
                 env=env,
                 stdout=output if not verbose else None,
@@ -239,8 +239,7 @@ class PublishDocsBuilder:
                 f"The output is hidden until an error occurs."
             )
         with open(self.log_build_filename, "w") as output:
-            completed_proc = run(
-                build_cmd,
+            completed_proc = safe_command.run(run, build_cmd,
                 cwd=self._src_dir,
                 env=env,
                 stdout=output if not verbose else None,

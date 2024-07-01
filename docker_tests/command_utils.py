@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import shlex
 import subprocess
+from security import safe_command
 
 
 def run_command(
@@ -29,7 +30,7 @@ def run_command(
             return subprocess.check_output(cmd, **kwargs).decode()
         else:
             try:
-                result = subprocess.run(cmd, check=check, **kwargs)
+                result = safe_command.run(subprocess.run, cmd, check=check, **kwargs)
                 return result.returncode == 0
             except FileNotFoundError:
                 if check:

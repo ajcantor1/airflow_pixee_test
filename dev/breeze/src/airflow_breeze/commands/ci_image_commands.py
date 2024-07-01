@@ -105,6 +105,7 @@ from airflow_breeze.utils.run_utils import (
     run_command,
 )
 from airflow_breeze.utils.shared_options import get_dry_run, get_verbose
+from security import safe_command
 
 if TYPE_CHECKING:
     from airflow_breeze.params.shell_params import ShellParams
@@ -637,8 +638,7 @@ def run_build_ci_image(
     else:
         env = os.environ.copy()
         env["DOCKER_BUILDKIT"] = "1"
-        subprocess.run(
-            [
+        safe_command.run(subprocess.run, [
                 sys.executable,
                 os.fspath(
                     AIRFLOW_SOURCES_ROOT
