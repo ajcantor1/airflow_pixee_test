@@ -2413,7 +2413,7 @@ class FabAirflowSecurityManagerOverride(AirflowSecurityManagerV2):
             claims.validate()
             return claims
 
-        return jwt.decode(id_token, options={"verify_signature": False})
+        return jwt.decode(id_token, options={"verify_signature": True})
 
     def _ldap_bind_indirect(self, ldap, con) -> None:
         """
