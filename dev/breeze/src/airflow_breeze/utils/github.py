@@ -28,6 +28,7 @@ from airflow_breeze.utils.confirm import Answer, user_confirm
 from airflow_breeze.utils.console import get_console
 from airflow_breeze.utils.path_utils import AIRFLOW_SOURCES_ROOT
 from airflow_breeze.utils.shared_options import get_dry_run
+from security import safe_requests
 
 
 def get_ga_output(name: str, value: Any) -> str:
@@ -46,12 +47,11 @@ def download_file_from_github(tag: str, path: str, output_file: Path) -> bool:
     :param output_file: Path where the file should be downloaded
     :return: whether the file was successfully downloaded (False if the file is missing or error occurred)
     """
-    import requests
 
     url = f"https://raw.githubusercontent.com/apache/airflow/{tag}/{path}"
     get_console().print(f"[info]Downloading {url} to {output_file}")
     if not get_dry_run():
-        response = requests.get(url)
+        response = safe_requests.get(url)
         if response.status_code == 404:
             get_console().print(f"[warning]The {url} has not been found. Skipping")
             return False

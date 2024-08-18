@@ -107,6 +107,7 @@ from airflow.utils.session import NEW_SESSION, provide_session
 from airflow.www.extensions.init_auth_manager import get_auth_manager
 from airflow.www.security_manager import AirflowSecurityManagerV2
 from airflow.www.session import AirflowDatabaseSessionInterface
+from security import safe_requests
 
 if TYPE_CHECKING:
     from airflow.auth.managers.base_auth_manager import ResourceMethod
@@ -2399,9 +2400,8 @@ class FabAirflowSecurityManagerOverride(AirflowSecurityManagerV2):
             session.sid = str(uuid.uuid4())
 
     def _get_microsoft_jwks(self) -> list[dict[str, Any]]:
-        import requests
 
-        return requests.get(MICROSOFT_KEY_SET_URL).json()
+        return safe_requests.get(MICROSOFT_KEY_SET_URL).json()
 
     def _decode_and_validate_azure_jwt(self, id_token: str) -> dict[str, str]:
         verify_signature = self.oauth_remotes["azure"].client_kwargs.get("verify_signature", False)

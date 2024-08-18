@@ -29,6 +29,7 @@ from cryptography.hazmat.primitives import serialization
 from airflow.exceptions import AirflowException
 from airflow.providers.snowflake.hooks.snowflake import SnowflakeHook
 from airflow.providers.snowflake.utils.sql_api_generate_jwt import JWTGenerator
+from security import safe_requests
 
 
 class SnowflakeSqlApiHook(SnowflakeHook):
@@ -223,7 +224,7 @@ class SnowflakeSqlApiHook(SnowflakeHook):
         for query_id in query_ids:
             header, params, url = self.get_request_url_header_params(query_id)
             try:
-                response = requests.get(url, headers=header, params=params)
+                response = safe_requests.get(url, headers=header, params=params)
                 response.raise_for_status()
                 self.log.info(response.json())
             except requests.exceptions.HTTPError as e:
@@ -258,7 +259,7 @@ class SnowflakeSqlApiHook(SnowflakeHook):
         """
         self.log.info("Retrieving status for query id %s", query_id)
         header, params, url = self.get_request_url_header_params(query_id)
-        response = requests.get(url, params=params, headers=header)
+        response = safe_requests.get(url, params=params, headers=header)
         status_code = response.status_code
         resp = response.json()
         return self._process_response(status_code, resp)

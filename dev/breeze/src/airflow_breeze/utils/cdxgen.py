@@ -43,6 +43,7 @@ from airflow_breeze.utils.github import (
 from airflow_breeze.utils.path_utils import AIRFLOW_SOURCES_ROOT, FILES_SBOM_DIR
 from airflow_breeze.utils.run_utils import run_command
 from airflow_breeze.utils.shared_options import get_dry_run
+from security import safe_requests
 
 
 def start_cdxgen_server(application_root_path: Path, run_in_parallel: bool, parallelism: int) -> None:
@@ -361,7 +362,6 @@ class SbomCoreJob(SbomApplicationJob):
         return True
 
     def produce(self, output: Output | None, port: int) -> tuple[int, str]:
-        import requests
 
         get_console(output=output).print(
             f"[info]Updating sbom for Airflow {self.airflow_version} and python {self.python_version}"
@@ -381,7 +381,7 @@ class SbomCoreJob(SbomApplicationJob):
             f"[info]Triggering sbom generation in {self.airflow_version} via {url}"
         )
         if not get_dry_run():
-            response = requests.get(url)
+            response = safe_requests.get(url)
             if response.status_code != 200:
                 get_console(output=output).print(
                     f"[error]Generation for Airflow {self.airflow_version}:python{self.python_version} "
@@ -409,7 +409,6 @@ class SbomProviderJob(SbomApplicationJob):
         return f"{self.provider_id}:{self.provider_version}:python{self.python_version}"
 
     def produce(self, output: Output | None, port: int) -> tuple[int, str]:
-        import requests
 
         get_console(output=output).print(
             f"[info]Updating sbom for provider {self.provider_id} version {self.provider_version} and python "
@@ -427,7 +426,7 @@ class SbomProviderJob(SbomApplicationJob):
         get_console(output=output).print(f"[info]Triggering sbom generation via {url}")
 
         if not get_dry_run():
-            response = requests.get(url)
+            response = safe_requests.get(url)
             if response.status_code != 200:
                 get_console(output=output).print(
                     f"[error]Generation for Airflow {self.provider_id}:{self.provider_version}:"
