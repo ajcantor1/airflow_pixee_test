@@ -2401,7 +2401,7 @@ class FabAirflowSecurityManagerOverride(AirflowSecurityManagerV2):
     def _get_microsoft_jwks(self) -> list[dict[str, Any]]:
         import requests
 
-        return requests.get(MICROSOFT_KEY_SET_URL).json()
+        return requests.get(MICROSOFT_KEY_SET_URL, timeout=60).json()
 
     def _decode_and_validate_azure_jwt(self, id_token: str) -> dict[str, str]:
         verify_signature = self.oauth_remotes["azure"].client_kwargs.get("verify_signature", False)

@@ -46,7 +46,7 @@ CONFIG_TEMPLATE_FORMAT_UPDATE = "2.6.0"
 
 
 def fetch_pypi_versions() -> list[str]:
-    r = requests.get("https://pypi.org/pypi/apache-airflow/json")
+    r = requests.get("https://pypi.org/pypi/apache-airflow/json", timeout=60)
     r.raise_for_status()
     all_version = r.json()["releases"].keys()
     released_versions = [d for d in all_version if not (("rc" in d) or ("b" in d))]
@@ -86,8 +86,8 @@ def parse_config_template_old_format(config_content: str) -> set[tuple[str, str,
 @functools.lru_cache
 def fetch_config_options_for_version(version_str: str) -> set[tuple[str, str]]:
     r = requests.get(
-        f"https://raw.githubusercontent.com/apache/airflow/{version_str}/airflow/config_templates/config.yml"
-    )
+        f"https://raw.githubusercontent.com/apache/airflow/{version_str}/airflow/config_templates/config.yml", 
+    timeout=60)
     r.raise_for_status()
     content = r.text
     if version.parse(version_str) >= version.parse(CONFIG_TEMPLATE_FORMAT_UPDATE):

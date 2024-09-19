@@ -51,7 +51,7 @@ def download_file_from_github(tag: str, path: str, output_file: Path) -> bool:
     url = f"https://raw.githubusercontent.com/apache/airflow/{tag}/{path}"
     get_console().print(f"[info]Downloading {url} to {output_file}")
     if not get_dry_run():
-        response = requests.get(url)
+        response = requests.get(url, timeout=60)
         if response.status_code == 404:
             get_console().print(f"[warning]The {url} has not been found. Skipping")
             return False
