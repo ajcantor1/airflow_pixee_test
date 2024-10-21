@@ -28,6 +28,7 @@ import subprocess
 import sys
 
 from airflow.utils.platform import IS_WINDOWS
+from security import safe_command
 
 if not IS_WINDOWS:
     import pty
@@ -180,8 +181,7 @@ def execute_in_subprocess_with_kwargs(cmd: list[str], **kwargs) -> None:
     All other keyword args will be passed directly to subprocess.Popen
     """
     log.info("Executing cmd: %s", " ".join(shlex.quote(c) for c in cmd))
-    with subprocess.Popen(
-        cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=0, close_fds=True, **kwargs
+    with safe_command.run(subprocess.Popen, cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=0, close_fds=True, **kwargs
     ) as proc:
         log.info("Output:")
         if proc.stdout:
@@ -211,8 +211,7 @@ def execute_interactive(cmd: list[str], **kwargs) -> None:
     # open pseudo-terminal to interact with subprocess
     primary_fd, secondary_fd = pty.openpty()
     try:
-        with subprocess.Popen(
-            cmd,
+        with safe_command.run(subprocess.Popen, cmd,
             stdin=secondary_fd,
             stdout=secondary_fd,
             stderr=secondary_fd,

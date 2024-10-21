@@ -26,6 +26,7 @@ from pinotdb import connect
 from airflow.exceptions import AirflowException
 from airflow.hooks.base import BaseHook
 from airflow.providers.common.sql.hooks.sql import DbApiHook
+from security import safe_command
 
 if TYPE_CHECKING:
     from airflow.models import Connection
@@ -232,8 +233,7 @@ class PinotAdminHook(BaseHook):
 
         if verbose:
             self.log.info(" ".join(command))
-        with subprocess.Popen(
-            command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True, env=env
+        with safe_command.run(subprocess.Popen, command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True, env=env
         ) as sub_process:
             stdout = ""
             if sub_process.stdout:

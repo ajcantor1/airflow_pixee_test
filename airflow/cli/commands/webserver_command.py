@@ -41,6 +41,7 @@ from airflow.utils.cli import setup_locations
 from airflow.utils.hashlib_wrapper import md5
 from airflow.utils.log.logging_mixin import LoggingMixin
 from airflow.utils.providers_configuration_loader import providers_configuration_loaded
+from security import safe_command
 
 log = logging.getLogger(__name__)
 
@@ -457,7 +458,7 @@ def webserver(args):
 
         def start_and_monitor_gunicorn(args):
             if args.daemon:
-                subprocess.Popen(run_args, close_fds=True)
+                safe_command.run(subprocess.Popen, run_args, close_fds=True)
 
                 # Reading pid of gunicorn master as it will be different that
                 # the one of process spawned above.
@@ -470,7 +471,7 @@ def webserver(args):
                 gunicorn_master_proc = psutil.Process(gunicorn_master_proc_pid)
                 monitor_gunicorn(gunicorn_master_proc)
             else:
-                with subprocess.Popen(run_args, close_fds=True) as gunicorn_master_proc:
+                with safe_command.run(subprocess.Popen, run_args, close_fds=True) as gunicorn_master_proc:
                     monitor_gunicorn(gunicorn_master_proc)
 
         if args.daemon:

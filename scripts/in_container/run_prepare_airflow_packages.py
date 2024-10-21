@@ -26,6 +26,7 @@ from pathlib import Path
 from shutil import rmtree
 
 import rich
+from security import safe_command
 
 
 def process_summary(success_message: str, error_message: str, completed_process: subprocess.CompletedProcess):
@@ -103,7 +104,7 @@ if package_format in ["both", "sdist"]:
 
 rich.print(f"[bright_blue]Building packages: {package_format}\n")
 
-process = subprocess.run(command, capture_output=True, text=True, cwd=AIRFLOW_SOURCES_ROOT)
+process = safe_command.run(subprocess.run, command, capture_output=True, text=True, cwd=AIRFLOW_SOURCES_ROOT)
 
 process_summary("Airflow packages built successfully", "Error building Airflow packages", process)
 
