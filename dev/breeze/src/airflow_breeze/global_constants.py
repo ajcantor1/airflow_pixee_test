@@ -333,7 +333,7 @@ def get_airflow_version():
     airflow_init_py_file = AIRFLOW_SOURCES_ROOT / "airflow" / "__init__.py"
     airflow_version = "unknown"
     with open(airflow_init_py_file) as init_file:
-        while line := init_file.readline():
+        while line := init_file.readline(5_000_000):
             if "__version__ = " in line:
                 airflow_version = line.split()[2][1:-1]
                 break
