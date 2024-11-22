@@ -28,6 +28,7 @@ from requests import HTTPError
 from tenacity import retry, stop_after_attempt, wait_exponential
 
 from airflow.hooks.base import BaseHook
+from security import safe_requests
 
 
 def _get_field(extras: dict, field_name: str):
@@ -98,7 +99,7 @@ class GoogleDataprepHook(BaseHook):
         """
         endpoint_path = f"{self.api_version}/jobGroups/{job_id}/jobs"
         url: str = urljoin(self._base_url, endpoint_path)
-        response = requests.get(url, headers=self._headers)
+        response = safe_requests.get(url, headers=self._headers)
         self._raise_for_status(response)
         return response.json()
 
@@ -116,7 +117,7 @@ class GoogleDataprepHook(BaseHook):
         params: dict[str, Any] = {"embed": embed, "includeDeleted": include_deleted}
         endpoint_path = f"{self.api_version}/jobGroups/{job_group_id}"
         url: str = urljoin(self._base_url, endpoint_path)
-        response = requests.get(url, headers=self._headers, params=params)
+        response = safe_requests.get(url, headers=self._headers, params=params)
         self._raise_for_status(response)
         return response.json()
 
@@ -210,7 +211,7 @@ class GoogleDataprepHook(BaseHook):
         """
         endpoint = f"/{self.api_version}/jobGroups/{job_group_id}/status"
         url: str = urljoin(self._base_url, endpoint)
-        response = requests.get(url, headers=self._headers)
+        response = safe_requests.get(url, headers=self._headers)
         self._raise_for_status(response)
         return response.json()
 

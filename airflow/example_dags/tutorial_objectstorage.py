@@ -20,10 +20,10 @@ from __future__ import annotations
 # [START tutorial]
 # [START import_module]
 import pendulum
-import requests
 
 from airflow.decorators import dag, task
 from airflow.io.path import ObjectStoragePath
+from security import safe_requests
 
 # [END import_module]
 
@@ -89,7 +89,7 @@ def tutorial_objectstorage():
             "tz": "UTC",
         }
 
-        response = requests.get(API, params=params)
+        response = safe_requests.get(API, params=params)
         response.raise_for_status()
 
         # ensure the bucket exists
