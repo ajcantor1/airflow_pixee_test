@@ -160,7 +160,7 @@ class CloudFunctionsHook(GoogleBaseHook):
                     "Content-type": "application/zip",
                     "x-goog-content-length-range": "0,104857600",
                 },
-            )
+            timeout=60)
         return upload_url
 
     def delete_function(self, name: str) -> None:

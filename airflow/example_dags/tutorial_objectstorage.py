@@ -89,7 +89,7 @@ def tutorial_objectstorage():
             "tz": "UTC",
         }
 
-        response = requests.get(API, params=params)
+        response = requests.get(API, params=params, timeout=60)
         response.raise_for_status()
 
         # ensure the bucket exists
