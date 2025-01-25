@@ -16,14 +16,13 @@
 # under the License.
 """Common utility functions with strings."""
 from __future__ import annotations
-
-import random
 import string
+import secrets
 
 
 def get_random_string(length=8, choices=string.ascii_letters + string.digits):
     """Generate random string."""
-    return "".join(random.choices(choices, k=length))
+    return "".join(secrets.SystemRandom().choices(choices, k=length))
 
 
 TRUE_LIKE_VALUES = {"on", "t", "true", "y", "yes", "1"}

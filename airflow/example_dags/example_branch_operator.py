@@ -20,8 +20,6 @@
 It is showcasing the basic BranchPythonOperator and its sisters BranchExternalPythonOperator
 and BranchPythonVirtualenvOperator."""
 from __future__ import annotations
-
-import random
 import sys
 import tempfile
 from pathlib import Path
@@ -40,6 +38,7 @@ from airflow.operators.python import (
 )
 from airflow.utils.edgemodifier import Label
 from airflow.utils.trigger_rule import TriggerRule
+import secrets
 
 PATH_TO_PYTHON_BINARY = sys.executable
 
@@ -62,7 +61,7 @@ with DAG(
     # [START howto_operator_branch_python]
     branching = BranchPythonOperator(
         task_id="branching",
-        python_callable=lambda: f"branch_{random.choice(options)}",
+        python_callable=lambda: f"branch_{secrets.choice(options)}",
     )
     # [END howto_operator_branch_python]
     run_this_first >> branching
@@ -89,9 +88,8 @@ with DAG(
 
     # [START howto_operator_branch_ext_py]
     def branch_with_external_python(choices):
-        import random
 
-        return f"ext_py_{random.choice(choices)}"
+        return f"ext_py_{secrets.choice(choices)}"
 
     branching_ext_py = BranchExternalPythonOperator(
         task_id="branching_ext_python",
@@ -128,12 +126,11 @@ with DAG(
     VENV_CACHE_PATH = Path(tempfile.gettempdir())
 
     def branch_with_venv(choices):
-        import random
 
         import numpy as np
 
         print(f"Some numpy stuff: {np.arange(6)}")
-        return f"venv_{random.choice(choices)}"
+        return f"venv_{secrets.choice(choices)}"
 
     branching_venv = BranchPythonVirtualenvOperator(
         task_id="branching_venv",

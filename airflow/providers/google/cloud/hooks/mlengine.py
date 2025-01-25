@@ -20,7 +20,6 @@ from __future__ import annotations
 
 import contextlib
 import logging
-import random
 import time
 from typing import TYPE_CHECKING, Callable
 
@@ -32,6 +31,7 @@ from googleapiclient.errors import HttpError
 from airflow.exceptions import AirflowException
 from airflow.providers.google.common.hooks.base_google import GoogleBaseAsyncHook, GoogleBaseHook
 from airflow.version import version as airflow_version
+import secrets
 
 if TYPE_CHECKING:
     from httplib2 import Response
@@ -68,13 +68,13 @@ def _poll_with_exponential_delay(
                 log.info("Operation is done: %s", response)
                 return response
 
-            time.sleep((2**i) + random.random())
+            time.sleep((2**i) + secrets.SystemRandom().random())
         except HttpError as e:
             if e.resp.status != 429:
                 log.info("Something went wrong. Not retrying: %s", format(e))
                 raise
             else:
-                time.sleep((2**i) + random.random())
+                time.sleep((2**i) + secrets.SystemRandom().random())
 
     raise ValueError(f"Connection could not be established after {max_n} retries.")
 

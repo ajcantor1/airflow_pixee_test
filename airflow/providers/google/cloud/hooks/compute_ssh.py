@@ -15,8 +15,6 @@
 # specific language governing permissions and limitations
 # under the License.
 from __future__ import annotations
-
-import random
 import shlex
 import time
 from functools import cached_property
@@ -36,6 +34,7 @@ from airflow.utils.types import NOTSET, ArgNotSet
 # cannot import "airflow.providers.ssh" and will be correctly discovered as optional feature
 # TODO:(potiuk) We should add test harness detecting such cases shortly
 import paramiko  # isort:skip
+import secrets
 
 CMD_TIMEOUT = 10
 
@@ -268,7 +267,7 @@ class ComputeEngineSSHHook(SSHHook):
                     raise
                 if retry == self.max_retries:
                     raise AirflowException("Maximum retries exceeded. Aborting operation.")
-                delay = random.randint(0, max_delay)
+                delay = secrets.SystemRandom().randint(0, max_delay)
                 self.log.info(f"Failed establish SSH connection, waiting {delay} seconds to retry...")
                 time.sleep(delay)
         if not sshclient:
