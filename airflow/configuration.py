@@ -50,6 +50,7 @@ from airflow.utils.empty_set import _get_empty_set_for_configuration
 from airflow.utils.module_loading import import_string
 from airflow.utils.providers_configuration_loader import providers_configuration_loaded
 from airflow.utils.weight_rule import WeightRule
+from security import safe_command
 
 if TYPE_CHECKING:
     from airflow.auth.managers.base_auth_manager import BaseAuthManager
@@ -108,8 +109,7 @@ def expand_env_var(env_var: str | None) -> str | None:
 
 def run_command(command: str) -> str:
     """Run command and returns stdout."""
-    process = subprocess.Popen(
-        shlex.split(command), stdout=subprocess.PIPE, stderr=subprocess.PIPE, close_fds=True
+    process = safe_command.run(subprocess.Popen, shlex.split(command), stdout=subprocess.PIPE, stderr=subprocess.PIPE, close_fds=True
     )
     output, stderr = (stream.decode(sys.getdefaultencoding(), "ignore") for stream in process.communicate())
 

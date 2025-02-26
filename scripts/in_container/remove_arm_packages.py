@@ -23,6 +23,7 @@ import subprocess
 from pathlib import Path
 
 from rich.console import Console
+from security import safe_command
 
 AIRFLOW_SOURCES_ROOT = Path(__file__).parents[2].resolve()
 AIRFLOW_PROVIDERS_ROOT = AIRFLOW_SOURCES_ROOT / "airflow" / "providers"
@@ -44,7 +45,7 @@ def remove_packages_missing_on_arm():
         + " ".join(all_dependencies_to_remove)
         + "\n"
     )
-    subprocess.run(["pip", "uninstall", "-y"] + all_dependencies_to_remove)
+    safe_command.run(subprocess.run, ["pip", "uninstall", "-y"] + all_dependencies_to_remove)
 
 
 if __name__ == "__main__":

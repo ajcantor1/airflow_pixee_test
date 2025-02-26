@@ -35,6 +35,7 @@ from rich.console import Console
 
 from airflow.exceptions import AirflowOptionalProviderFeatureException
 from airflow.secrets import BaseSecretsBackend
+from security import safe_command
 
 console = Console(width=400, color_system="standard")
 
@@ -779,7 +780,7 @@ if __name__ == "__main__":
         )
         console.print(AIRFLOW_LOCAL_SETTINGS_PATH.read_text())
         console.print("\n")
-        proc = subprocess.run([sys.executable, "-c", "import airflow"], check=False)
+        proc = safe_command.run(subprocess.run, [sys.executable, "-c", "import airflow"], check=False)
         if proc.returncode != 0:
             console.print(
                 "[red] Importing all provider classes with potential for recursion  "
