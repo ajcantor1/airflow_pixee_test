@@ -21,6 +21,7 @@ import json
 import re
 
 from airflow_breeze.utils.console import get_console
+from security import safe_requests
 
 DATE_MATCHER = re.compile(r"automatically generated on (\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})Z")
 
@@ -50,7 +51,7 @@ def print_backtracking_candidates():
     candidates_for_backtracking = []
     for x in dependency_array:
         dep, version = x.split("==")
-        response = requests.get(f"https://pypi.org/pypi/{dep}/json")
+        response = safe_requests.get(f"https://pypi.org/pypi/{dep}/json")
         info = json.loads(response.text)
         latest_version = info["info"]["version"]
         release_date_str = info["releases"][latest_version][0]["upload_time"]

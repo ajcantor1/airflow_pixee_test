@@ -26,6 +26,7 @@ import requests
 import semver
 import yaml
 from packaging import version
+from security import safe_requests
 
 ROOT_DIR = Path(__file__).resolve().parent / ".."
 
@@ -85,7 +86,7 @@ def parse_config_template_old_format(config_content: str) -> set[tuple[str, str,
 
 @functools.lru_cache
 def fetch_config_options_for_version(version_str: str) -> set[tuple[str, str]]:
-    r = requests.get(
+    r = safe_requests.get(
         f"https://raw.githubusercontent.com/apache/airflow/{version_str}/airflow/config_templates/config.yml"
     )
     r.raise_for_status()

@@ -27,6 +27,7 @@ from pydruid.db import connect
 from airflow.exceptions import AirflowException
 from airflow.hooks.base import BaseHook
 from airflow.providers.common.sql.hooks.sql import DbApiHook
+from security import safe_requests
 
 
 class IngestionType(Enum):
@@ -123,7 +124,7 @@ class DruidHook(BaseHook):
 
         sec = 0
         while running:
-            req_status = requests.get(druid_task_status_url, auth=self.get_auth())
+            req_status = safe_requests.get(druid_task_status_url, auth=self.get_auth())
 
             self.log.info("Job still running for %s seconds...", sec)
 
