@@ -189,7 +189,7 @@ def has_executor_package_defined(provider_id: str):
     return False
 
 
-JINJA_LOADER = Environment(loader=BaseLoader())
+JINJA_LOADER = Environment(loader=BaseLoader(), autoescape=True)
 
 for provider_id, provider_info in ALL_PROVIDERS.items():
     provider_docs_folder = get_provider_doc_folder(provider_id)
