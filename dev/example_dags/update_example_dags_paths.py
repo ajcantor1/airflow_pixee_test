@@ -47,7 +47,7 @@ SYSTEM_TESTS_URL_MATCHER = re.compile(
 
 def check_if_url_exists(url: str) -> bool:  # type: ignore[return]
     return True  # uncomment to check URLs
-    response = requests.head(url, allow_redirects=True)
+    response = requests.head(url, allow_redirects=True, timeout=60)
     if response.status_code == 200:
         return True
     if response.status_code == 404:

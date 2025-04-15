@@ -100,7 +100,7 @@ def internal_api_call(func: Callable[PS, RT]) -> Callable[PS, RT]:
     def make_jsonrpc_request(method_name: str, params_json: str) -> bytes:
         data = {"jsonrpc": "2.0", "method": method_name, "params": params_json}
         internal_api_endpoint = InternalApiConfig.get_internal_api_endpoint()
-        response = requests.post(url=internal_api_endpoint, data=json.dumps(data), headers=headers)
+        response = requests.post(url=internal_api_endpoint, data=json.dumps(data), headers=headers, timeout=60)
         if response.status_code != 200:
             raise AirflowException(
                 f"Got {response.status_code}:{response.reason} when sending the internal api request."

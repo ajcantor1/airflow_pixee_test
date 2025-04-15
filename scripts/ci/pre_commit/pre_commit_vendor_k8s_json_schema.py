@@ -48,7 +48,7 @@ def find_refs(props: dict) -> Iterator[str]:
 
 
 def get_remote_schema(url: str) -> dict:
-    req = requests.get(url)
+    req = requests.get(url, timeout=60)
     req.raise_for_status()
     return req.json()
 

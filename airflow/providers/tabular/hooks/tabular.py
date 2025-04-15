@@ -84,7 +84,7 @@ class TabularHook(BaseHook):
         client_secret = conn.password
         data = {"client_id": client_id, "client_secret": client_secret, "grant_type": "client_credentials"}
 
-        response = requests.post(f"{base_url}/{TOKENS_ENDPOINT}", data=data)
+        response = requests.post(f"{base_url}/{TOKENS_ENDPOINT}", data=data, timeout=60)
         response.raise_for_status()
 
         return response.json()["access_token"]

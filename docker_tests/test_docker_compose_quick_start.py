@@ -47,7 +47,7 @@ def api_request(method: str, path: str, base_url: str = "http://localhost:8080/a
         auth=(AIRFLOW_WWW_USER_USERNAME, AIRFLOW_WWW_USER_PASSWORD),
         headers={"Content-Type": "application/json"},
         **kwargs,
-    )
+    timeout=60)
     response.raise_for_status()
     return response.json()
 
