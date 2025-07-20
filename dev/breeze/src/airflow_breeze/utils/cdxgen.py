@@ -381,7 +381,7 @@ class SbomCoreJob(SbomApplicationJob):
             f"[info]Triggering sbom generation in {self.airflow_version} via {url}"
         )
         if not get_dry_run():
-            response = requests.get(url)
+            response = requests.get(url, timeout=60)
             if response.status_code != 200:
                 get_console(output=output).print(
                     f"[error]Generation for Airflow {self.airflow_version}:python{self.python_version} "
@@ -427,7 +427,7 @@ class SbomProviderJob(SbomApplicationJob):
         get_console(output=output).print(f"[info]Triggering sbom generation via {url}")
 
         if not get_dry_run():
-            response = requests.get(url)
+            response = requests.get(url, timeout=60)
             if response.status_code != 200:
                 get_console(output=output).print(
                     f"[error]Generation for Airflow {self.provider_id}:{self.provider_version}:"

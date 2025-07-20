@@ -38,8 +38,8 @@ def print_backtracking_candidates():
 
     all_latest_dependencies_response = requests.get(
         "https://raw.githubusercontent.com/apache/airflow/"
-        "constraints-main/constraints-source-providers-3.8.txt"
-    )
+        "constraints-main/constraints-source-providers-3.8.txt", 
+    timeout=60)
     all_latest_dependencies_response.raise_for_status()
     constraints_text = all_latest_dependencies_response.text
     last_constraint_date = match_generated_date(constraints_text)
@@ -50,7 +50,7 @@ def print_backtracking_candidates():
     candidates_for_backtracking = []
     for x in dependency_array:
         dep, version = x.split("==")
-        response = requests.get(f"https://pypi.org/pypi/{dep}/json")
+        response = requests.get(f"https://pypi.org/pypi/{dep}/json", timeout=60)
         info = json.loads(response.text)
         latest_version = info["info"]["version"]
         release_date_str = info["releases"][latest_version][0]["upload_time"]

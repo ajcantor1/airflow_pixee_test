@@ -158,7 +158,7 @@ class SnowflakeSqlApiHook(SnowflakeHook):
                 "query_tag": query_tag,
             },
         }
-        response = requests.post(url, json=data, headers=headers, params=params)
+        response = requests.post(url, json=data, headers=headers, params=params, timeout=60)
         try:
             response.raise_for_status()
         except requests.exceptions.HTTPError as e:  # pragma: no cover
@@ -223,7 +223,7 @@ class SnowflakeSqlApiHook(SnowflakeHook):
         for query_id in query_ids:
             header, params, url = self.get_request_url_header_params(query_id)
             try:
-                response = requests.get(url, headers=header, params=params)
+                response = requests.get(url, headers=header, params=params, timeout=60)
                 response.raise_for_status()
                 self.log.info(response.json())
             except requests.exceptions.HTTPError as e:
@@ -258,7 +258,7 @@ class SnowflakeSqlApiHook(SnowflakeHook):
         """
         self.log.info("Retrieving status for query id %s", query_id)
         header, params, url = self.get_request_url_header_params(query_id)
-        response = requests.get(url, params=params, headers=header)
+        response = requests.get(url, params=params, headers=header, timeout=60)
         status_code = response.status_code
         resp = response.json()
         return self._process_response(status_code, resp)
